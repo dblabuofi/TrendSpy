@@ -1,0 +1,155 @@
+<label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Select Finished task">Task: </label>
+<select ng-model="selectedTask" 
+        ng-options="item.id as item.text for item in items"
+        ng-change="selctionChanged()" >
+        <option style="display:none" value=""> select a task
+        </option>
+</select>       
+<label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Limited the maximum tweets returned from search because the browser can't handle all of them">Maximum Search Tweets limits: </label>
+<select type="text" ng-model="limit" >
+        <option value='1000'>1000</option>
+        <option value='5000'>5000</option>
+        <option value='10000'>10000</option>
+</select>
+
+<button type="button" class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Optional Field</button>
+<button class='btn btn-primary' ng-click="filterTweets()">Search Tweets</button>
+<button disabled class="btn btn-info pull-right"># of Tweets Returned <span class="badge">{{tweetsReturnCount}}</span></button>
+<!--<button disabled class="btn btn-info pull-right"># of Tweets in Database <span class="badge">{{tweetsCount}}</span></button>-->
+
+
+
+<div uib-collapse="isCollapsed">
+        <div class="well">
+                <form name="myForm1" novalidate angular-validator>
+                        <label style="font-size:1.5em;font-color:#927346;"  data-toggle="tooltip" data-placement="top" title="Example: Dallas cop shooting, Tina">
+                                Key words:
+                        </label>
+                        <input name="keywords" type="text" ng-model="filterKeywords" placeholder="separated by comma">
+                        <label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Example: 07/10/2016">From Date: </label>
+                        <input type="text" 
+                               name="fromDate"
+                               validate-on="dirty"
+                               ng-model="fromDate" 
+                               validator = "myFromDateValidator(fromDate)"
+                               invalid-message="'date like 07-01-2016 08:03:04'"
+                               required-message="'This field is required'"
+                               placeholder="mm-dd-yyyy hh:mm:ss"
+                               required>
+                        <label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Example: 07/30/2016">To Date: </label>
+                        <input type="text" 
+                               name="toDate"
+                               validate-on="dirty"
+                               ng-model="toDate" 
+                               validator = "myFromDateValidator(toDate)"
+                               invalid-message="'date like 07-16-2016 08:03:04'"
+                               required-message="'This field is required'"
+                               placeholder="mm-dd-yyyy hh:mm:ss"
+                               required>
+                        <label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Example: Portland">Location: </label>
+                        <!--<input type="text" ng-model="location" placeholder="" style='width:6%;'>-->
+                        <input autocomplete="off" name="location" type="text" ng-model="location" uib-typeahead="address for address in getLocation($viewValue)" >
+                        <button type='submit' ng-hide="true"></button>
+                </form>
+        </div>
+</div>
+
+<div ng-repeat="alert in alertMessage" style="position: absolute;left:30%;z-index: 10; width: 30%;" uib-alert class="alert alert-danger fade in" close="closeAlert($index)">{{alert}}</div>
+
+<hr>
+<label style="font-size:1.5em;font-color:#927346;">Filter Return Tweets </label>
+<input type="text" ng-model="search" ng-change="updateTable()">
+
+
+
+<uib-tabset>
+        <uib-tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active" style="font-size: 1.5em;">
+                <img ng-show="tab.loading" src="image/loading.gif" style="width:150px;height:150px;position:fixed;top:40%;left:35%;"/>
+                <!--        <table  st-safe-src="tab.content" st-table="tab.content.data" class="table table-striped"  style="width:100%">-->
+                <table st-safe-src="tab.totalContent" st-table="tab.displayedCollection"  class="table table-striped"  style="width:100%; table-layout: fixed;">
+                        <thead>
+                                <tr>
+                                        <!--                                        <th ng-click="orderBy('keywords')">
+                                                                                        <span >keywords</span>
+                                                                                        <span ng-hide="keywords === 0" class='glyphicon' ng-class="{true:'glyphicon-chevron-up', false: 'glyphicon-chevron-down'}[keywords === 2]"></span>
+                                                                                </th>-->
+                                        <th ng-click="orderBy('created_at')" style="width:10%;">
+                                                <span >Created_at</span>
+                                                <span ng-hide="created_at === 0" class='glyphicon' ng-class="{true:'glyphicon-chevron-up', false: 'glyphicon-chevron-down'}[created_at === 2]"></span>
+                                        </th>
+                                        <th ng-click="orderBy('text')"  style="width:60%;">
+                                                <span >text</span>
+                                                <span ng-hide="text === 0" class='glyphicon' ng-class="{true:'glyphicon-chevron-up', false: 'glyphicon-chevron-down'}[text === 2]"></span>
+                                        </th>
+                                        <th ng-click="orderBy('user.name')"  style="width:10%;">
+                                                <span >user name</span>
+                                                <span ng-hide="username === 0" class='glyphicon' ng-class="{true:'glyphicon-chevron-up', false: 'glyphicon-chevron-down'}[username === 2]"></span>
+                                        </th>
+                                        <th ng-click="orderBy('user.screen_name')"  style="width:10%;">
+                                                <span >screen name</span>
+                                                <span ng-hide="userscreen_name === 0" class='glyphicon' ng-class="{true:'glyphicon-chevron-up', false: 'glyphicon-chevron-down'}[userscreen_name === 2]"></span>
+                                        </th>
+                                        <th ng-click="orderBy('user.location')"  style="width:10%;">
+                                                <span>location</span>
+                                                <span ng-hide="userLocation === 0" class='glyphicon' ng-class="{true:'glyphicon-chevron-up', false: 'glyphicon-chevron-down'}[userLocation === 2]"></span>
+                                        </th>
+                                        <th ng-click="orderBy('place.full_name')"  style="width:10%;">
+                                                <span>place</span>
+                                                <span ng-hide="place === 0" class='glyphicon' ng-class="{true:'glyphicon-chevron-up', false: 'glyphicon-chevron-down'}[place === 2]"></span>
+                                        </th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                                <!--<tr ng-repeat="data in tab.content.data | filter:search">-->
+                                <tr ng-repeat="data in tab.content.data">
+                                        <!--                                        <td>
+                                                                                        {{data.keywords}}
+                                                                                </td>-->
+                                        <td>
+                                                {{data.created_at}}
+                                        </td>
+                                        <td>
+                                                {{data.text}}
+                                        </td>
+                                        <td>
+                                                {{data.user.name}}
+                                        </td>
+                                        <td>
+                                                {{data.user.screen_name}}
+                                        </td>
+                                        <td>
+                                                {{data.user.location}}
+                                        </td>
+                                        <td>
+                                                {{data.place.full_name}}
+                                        </td>
+                        </tbody>
+                        <tfoot>
+                                <tr>
+                        <div class="pull-right">
+                                <div class="" style="float:left;position: relative;bottom: -25px;">
+                                        <span>Items per Page:</span>
+
+                                        <select   class=""   ng-model="tab.itemPerPage" ng-change="tab.pageChanged()">
+                                                <option value="10" selected>10</option>
+                                                <option value="20">20</option>
+                                                <option value="50">50</option>
+                                                <option value="100">100</option>
+                                        </select>
+                                </div>
+                                <span>&nbsp;</span>
+                                <uib-pagination total-items="tab.totalItems" 
+                                                ng-model="tab.curPage" 
+                                                max-size="5" 
+                                                class="pagination-sm"
+                                                items-per-page="tab.itemPerPage"
+                                                ng-change="tab.pageChanged()"
+                                                boundary-links="true"
+                                                boundary-link-numbers="true"></uib-pagination>
+                        </div>
+                        </tr>
+                        </tfoot>
+                </table>
+
+        </uib-tab>
+</uib-tabset>

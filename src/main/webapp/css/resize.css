@@ -1,0 +1,28 @@
+
+#sidebar-resizer {
+    background-color: black;
+    position: relative;
+    top: 0%;
+    height: 100%;
+    bottom: 0;
+    left: 50%;
+    width: 6px;
+    cursor: e-resize;
+    z-index: 9;
+}
+#content-resizer {
+    position: relative;
+    height: 6px;
+    top: -49%;
+    width: 100%;
+    background-color: black;
+    cursor: n-resize;
+}
+
+table.info, table.info tr {
+    border: 1px #3d4450 solid;
+    padding:1px;
+}
+table.info th, table.info td {
+    padding: 12px;
+}

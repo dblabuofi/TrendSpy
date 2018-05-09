@@ -1,0 +1,145 @@
+  <uib-tabset active="activeJustified" justified="true">
+          <uib-tab index="0" heading="Lag Time">
+                  <div class="row">
+                          <div class="col-md-6">
+                                  <table class="table">
+                                        <thead>
+                                                <tr>
+                                                        <th ng-repeat="title in content.titles">
+                                                                {{title}}
+                                                        </th>
+                                                        <!--<th><span class="glyphicon glyphicon-download-alt"></span></th>-->
+                                                </tr>
+                                        </thead>
+                                        <tfoot>
+                                                <tr>
+                                                        <td colspan="3">
+                                                                <span>Items per Page:</span>
+                                                                <select id="itemPerPage" ng-model="itemPerPage" ng-change="pageChanged()">
+                                                                        <option value="10">10</option>
+                                                                        <option ng-selcted="true" value="20">20</option>
+                                                                        <option value="50">50</option>
+                                                                        <option value="100">100</option>
+                                                                </select>
+                                                                <!--</div>-->
+                                                        </td>
+                                                        <td colspan="5">
+                                        <uib-pagination total-items="totalContent.data.length" 
+                                                        ng-model="curPage" 
+                                                        max-size="5" 
+                                                        class="pagination-sm"
+                                                        items-per-page="itemPerPage"
+                                                        ng-change="pageChanged()"
+                                                        boundary-links="true"
+                                                        boundary-link-numbers="true"
+                                                        style="position:relative;top:-20px;left:-20px;">
+                                        </uib-pagination>
+                                        </td>
+                                        </tr>
+                                        </tfoot>
+                                        <tbody>
+                                                <tr ng-repeat="content in content.data" ng-click="tableclick(content)" ng-class = "{selected:content.toString().split(',')[0] == selectedID}">
+                                                        <!--<tr ng-repeat="content in content.data" ng-click="tableclick(content)" ng-class = "{selected:true}">-->
+                                                        <td ng-repeat="item in content track by $index" >
+                                                                {{item}}
+                                                        </td>
+                                                        <!--<td><span ng-show="content[6] == 'Twitter Stream' " class="glyphicon glyphicon-download" ng-click="downloadData(content)"></span></td>-->
+                                                </tr>
+                                        </tbody>
+                                </table>
+                          </div>
+                          <div class="col-md-6"><!-- calculation -->
+                                    <div class="row">
+                                          <label>Trending</label>
+                                          <div style="position:relative;left:2%;width: 95%;border-color:1vh solid red;" >
+                                                  <canvas class='chart chart-line' 
+                                                          chart-type='chartType' 
+                                                          chart-data="data" 
+                                                          chart-labels="labels" 
+                                                          chart-legend="true" 
+                                                          chart-series="series" 
+                                                          style="z-index: 99;border: top;border-color: 1vh solid red;"></canvas> 
+<!--                                                          <canvas id="line" class="chart chart-line" chart-data="data"
+                                                                chart-labels="labels" chart-series="series" chart-options="options"
+                                                                chart-dataset-override="datasetOverride" chart-click="onClick">
+                                                          </canvas>-->
+
+                                          </div>
+                                  </div>
+                                  <div class="row">
+                                          <label>Lag Time Calculation</label>
+                                          <form role="form"  id="uploadForm"  
+                                                > 
+                                                  <div class="form-group">
+                                                          <label class="control-label col-sm-2" >ID:</label>
+                                                          <div class="col-sm-10">
+                                                                  <input class="form-control" ng-value="selectedID" disabled>
+                                                          </div>
+                                                  </div>
+                                                  <div class="form-group">
+                                                          <label class="control-label col-sm-2" >Start Date:</label>
+                                                          <div class="col-sm-10"> 
+                                                                  <input class="form-control" ng-value="selectedStartDate" disabled>
+                                                          </div>
+                                                  </div>
+                                                  <div class="form-group">
+                                                          <label class="control-label col-sm-2" >End Date:</label>
+                                                          <div class="col-sm-10"> 
+                                                                  <input class="form-control" ng-value="selectedEndDate" disabled>
+                                                          </div>
+                                                  </div>
+                                                  <div class="form-group">
+                                                          <label class="control-label col-sm-2" >Location:</label>
+                                                          <div class="col-sm-10"> 
+                                                                  <input class="form-control" ng-value="selectedLocation" disabled>
+                                                          </div>
+                                                  </div>
+                                                  <div class="form-group">
+                                                          <label class="control-label col-sm-2">Source From:</label>
+                                                          <div class="col-sm-10"> 
+                                                                  <input class="form-control" ng-value="selectedSourceFrom" disabled>
+                                                          </div>
+                                                  </div>
+                                                  <div class="form-group">
+                                                          <label class="control-label col-sm-2">Event Start Date:</label>
+                                                          <div class="col-sm-10"> 
+                                                                  <input id="eventStartDate" 
+                                                                         name="eventStartDate" 
+                                                                         class="form-control"  
+                                                                         ng-model="eventStartDate"
+                                                                         placeholder="mm-dd-yyyy"
+                                                                         required>
+                                                          </div>
+                                                  </div>
+                                                  <div class="form-group"> 
+                                                          <div class="col-sm-offset-2 col-sm-10">
+                                                                  <!--<input type="button" class="btn btn-info" onclick="RegisterUpdateResource()" value="Add">-->
+                                                                  <input type="text" class="btn btn-info" value="Calculate" ng-click="calculateFunc()" >
+                                                          </div>
+                                                  </div>
+                                          </form>
+                                  </div>
+                                  <div class="row">
+                                          <div class="col-md-4">
+                                                  <label>Lag Time</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                                  <label class="badge">{{lagTime}}</label>
+                                          </div>
+                                  </div>
+                                  <div class="row">
+                                          <div class="col-md-4">
+                                                  <label>Response Date</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                                  <label class="badge">{{responsedEventDate}}</label>
+                                          </div>
+                                  </div>
+                                  
+                                  
+                          </div>
+                  </div>
+          </uib-tab>
+    <uib-tab index="1" heading="Compare Event">Compare Event</uib-tab>
+    <uib-tab index="2" heading="Event Effective">Event Effective</uib-tab>
+  </uib-tabset>

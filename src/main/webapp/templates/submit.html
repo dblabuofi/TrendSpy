@@ -1,0 +1,243 @@
+<div ng-controller="submitController">
+        <!--        <form angular-validator-submit="submitMyForm()" name="myForm" class="form-horizontal" novalidate angular-validator>
+                    <h4>Choose when to validate:</h4>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">On dirty validation</label>
+                        <div class="col-sm-10">
+                            <input  type = "text"
+                                name = "dirty"
+                                validate-on="dirty"
+                                class = "form-control"
+                                ng-model = "form.dirty"
+                                ng-pattern="/regex/"
+                                invalid-message="'You must enter the word `regex`'"
+                                required-message="'Yo! This field is required..'"
+                                required></div>
+                    </div>
+                </form>-->
+        <img ng-show="loading" src="image/loading.gif" style="width:150px;height:150px;position:fixed;top:40%;left:35%;"/>
+        <form id="myForm" angular-validator-submit=""  name="myForm" novalidate angular-validator  class='form-inline'>
+                <div class='form-group'>
+                        <label style="font-size:1.5em;font-color:#927346;"  data-toggle="tooltip" data-placement="top" title="Example: Dallas cop shooting, Tina">
+                                Key words
+                                <span class="glyphicon glyphicon-question-sign" style="color:#cccc00;" 
+                                      uib-tooltip="Please read manual for usage"
+                                      tooltip-placement="bottom"
+                                      tooltip-trigger="mouseenter"               
+                                      ></span>:
+                        </label>
+                        <input name="keywords" type="text" ng-model="filterKeywords" placeholder="separated by comma">
+                </div>
+                <div class='form-group'>
+                        <label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Example: 07/10/2016">Start Date: </label>
+                        <input type="text" 
+                               name="fromDate"
+                               validate-on="dirty"
+                               ng-model="fromDate" 
+                               validator = "myFromDateValidator(fromDate)"
+                               invalid-message="'date like 07-01-2016 08:03:04'"
+                               required-message="'This field is required'"
+                               placeholder="mm-dd-yyyy hh:mm:ss"
+                               required>
+                </div>
+                <div class='form-group'>
+                        <label style="font-size:1.5em;font-color:#927346;"  data-toggle="tooltip" data-placement="top" title="Example: 07/30/2016">End Date: </label>
+                        <!--<input name="toDate" type="text" ng-model="toDate"   placeholder="mm-dd-yyyy hh:mm:ss" required>-->
+                        <input type="text" 
+                               name="toDate"
+                               validate-on="dirty"
+                               ng-model="toDate" 
+                               validator = "myToDateValidator(fromDate, toDate) === true"
+                               invalid-message="myToDateValidator(fromDate, toDate)"
+                               required-message="'This field is required'"
+                               placeholder="mm-dd-yyyy hh:mm:ss" 
+                               required>
+                        <!--invalid-message="'date like 07-16-2016 08:03:04'"-->
+                </div>
+                <div class='form-group'>
+                        <label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Example: Portland">
+                                Location: 
+                        </label>
+                        <input autocomplete="off" name="location" type="text" ng-model="location" uib-typeahead="address for address in getLocation($viewValue)" >
+                </div>
+                <button class="btn btn-info" ng-disabled="isSubmitting == true" ng-click="submitFutureTask()">
+                        <span ng-show="!isSubmitting">Submit Future Task</span>
+                        <span ng-show="isSubmitting">
+                                Submitting
+                                <img src="image/button_loading.gif" style="width: 5%;height:2%;"/>
+                        </span>
+                </button>
+        </form>
+        <button style="position:absolute;z-index: 900;top:7%;left:90%;" class="btn btn-warning" ng-click="myRefresh()" 
+                ng-disabled="runHistory == true || runCurrent == true || runFuture == true">
+                Refresh
+        </button>
+
+        <div ng-repeat="alert in alertMessage" style="position: absolute;left:30%;z-index: 10; width: 30%;" uib-alert class="alert alert-danger fade in" close="closeAlert($index)">{{alert}}</div>
+
+        <div class="row">
+                <div ng-class="{'col-md-4': isCollapsed == false, 'col-md-1': isCollapsed == true }">
+                        <!--<h3 ><span class="label label-primary">Finished Task</span></h3>-->
+                        <button type="button" class="btn btn-primary" ng-click="isCollapsed = !isCollapsed">Finished Task</button>
+                        <div uib-collapse="isCollapsed">
+                                <table class="table">
+                                        <thead>
+                                                <tr>
+                                                        <th ng-repeat="title in content.titles">
+                                                                {{title}}
+                                                        </th>
+                                                        <th><span class="glyphicon glyphicon-download-alt"></span></th>
+                                                </tr>
+                                        </thead>
+                                        <tfoot>
+                                                <tr>
+                                                        <td colspan="3">
+                                                                <span>Items per Page:</span>
+                                                                <select ng-model="itemPerPage" ng-change="pageChanged()">
+                                                                        <option value="10">10</option>
+                                                                        <option ng-selcted="true" value="20">20</option>
+                                                                        <option value="50">50</option>
+                                                                        <option value="100">100</option>
+                                                                </select>
+                                                                <!--</div>-->
+                                                        </td>
+                                                        <td colspan="5">
+                                        <uib-pagination total-items="totalContent.data.length" 
+                                                        ng-model="curPage" 
+                                                        max-size="5" 
+                                                        class="pagination-sm"
+                                                        items-per-page="itemPerPage"
+                                                        ng-change="pageChanged()"
+                                                        boundary-links="true"
+                                                        boundary-link-numbers="true"
+                                                        style="position:relative;top:-20px;left:-20px;">
+                                        </uib-pagination>
+                                        </td>
+                                        </tr>
+                                        </tfoot>
+                                        <tbody>
+                                                <tr ng-repeat="content in content.data" ng-click="tableclick(content)" ng-class = "{selected:content.toString().split(',')[0] == selectedID}">
+                                                        <!--<tr ng-repeat="content in content.data" ng-click="tableclick(content)" ng-class = "{selected:true}">-->
+                                                        <td ng-repeat="item in content track by $index" >
+                                                                {{item}}
+                                                        </td>
+                                                        <td><span ng-show="content[6] == 'Twitter Stream' " class="glyphicon glyphicon-download" ng-click="downloadData(content)"></span></td>
+                                                </tr>
+                                        </tbody>
+                                </table>
+                        </div>
+                </div>
+                <div class="col-md-4" ng-class="{'col-md-4': isCurCollapsed == false, 'col-md-1': isCurCollapsed == true }">
+                        <!--<h3 ><span class="label label-primary">Current Running</span></h3>-->
+                        <div class="row">
+                                <label class="label label-default">{{curStatus}}</label>
+                        </div>
+                        <br>
+                        <div class="row">
+                        <button type="button" class="btn btn-primary" ng-click="isCurCollapsed = !isCurCollapsed">Current Running</button>
+                        <div uib-collapse="isCurCollapsed">
+                                <table class="table">
+                                        <thead>
+                                                <tr>
+                                                        <th ng-repeat="title in curcontent.titles">
+                                                                {{title}}
+                                                        </th>
+                                                        <th>delete</th>
+                                                </tr>
+                                        </thead>
+                                        <tfoot>
+                                                <tr>
+                                                        <td colspan="3">
+                                                                <span>Items per Page:</span>
+                                                                <select ng-model="curitemPerPage" ng-change="curpageChanged()">
+                                                                        <option value="10">10</option>
+                                                                        <option ng-selcted="true" value="20">20</option>
+                                                                        <option value="50">50</option>
+                                                                        <option value="100">100</option>
+                                                                </select>
+                                                                <!--</div>-->
+                                                        </td>
+                                                        <td colspan="5">
+                                        <uib-pagination total-items="curtotalContent.data.length" 
+                                                        ng-model="curcurPage" 
+                                                        max-size="5" 
+                                                        class="pagination-sm"
+                                                        items-per-page="curitemPerPage"
+                                                        ng-change="curpageChanged()"
+                                                        boundary-links="true"
+                                                        boundary-link-numbers="true"
+                                                        style="position:relative;top:-20px;left:-20px;">
+                                        </uib-pagination>
+                                        </td>
+                                        </tr>
+                                        </tfoot>
+                                        <tbody>
+                                                <tr ng-repeat="content in curcontent.data" ng-click="curtableclick(content)" ng-class = "{selected:content.toString().split(',')[0] == selectedID}">
+                                                        <!--<tr ng-repeat="content in content.data" ng-click="tableclick(content)" ng-class = "{selected:true}">-->
+                                                        <td ng-repeat="item in content track by $index" >
+                                                                {{item}}
+                                                        </td>
+                                                        <td><a style="cursor:pointer"><span style='color:red;' class='glyphicon glyphicon-remove pointer' ng-click="removeCurTask($index)"></span></a></td>
+                                                </tr>
+                                        </tbody> 
+                                </table>
+                        </div>
+                </div>
+                        </div>
+                <div class="col-md-4">
+                        <!--<h3 ><span class="label label-primary">Future Task</span></h3>-->
+                        <button type="button" class="btn btn-primary" ng-click="isFuCollapsed = !isFuCollapsed">Future Task</button>
+                        <div uib-collapse="isFuCollapsed">
+                                <table class="table">
+                                        <thead>
+                                                <tr>
+                                                        <th ng-repeat="title in fucontent.titles">
+                                                                {{title}}
+                                                        </th>
+                                                        <th>
+                                                                delete
+                                                        </th>
+                                                </tr>
+                                        </thead>
+                                        <tfoot>
+                                                <tr>
+                                                        <td colspan="3">
+                                                                <span>Items per Page:</span>
+                                                                <select ng-model="fuitemPerPage" ng-change="fupageChanged()">
+                                                                        <option value="10">10</option>
+                                                                        <option ng-selcted="true" value="20">20</option>
+                                                                        <option value="50">50</option>
+                                                                        <option value="100">100</option>
+                                                                </select>
+                                                                <!--</div>-->
+                                                        </td>
+                                                        <td colspan="5">
+                                        <uib-pagination total-items="futotalContent.data.length" 
+                                                        ng-model="fucurPage" 
+                                                        max-size="5" 
+                                                        class="pagination-sm"
+                                                        items-per-page="fuitemPerPage"
+                                                        ng-change="fupageChanged()"
+                                                        boundary-links="true"
+                                                        boundary-link-numbers="true"
+                                                        style="position:relative;top:-20px;left:-20px;">
+                                        </uib-pagination>
+                                        </td>
+                                        </tr>
+                                        </tfoot>
+                                        <tbody>
+                                                <tr ng-repeat="content in fucontent.data" ng-click="futableclick(content)" ng-class = "{selected:content.toString().split(',')[0] == selectedID}">
+                                                        <!--<tr ng-repeat="content in content.data" ng-click="tableclick(content)" ng-class = "{selected:true}">-->
+                                                        <td ng-repeat="item in content track by $index" >
+                                                                {{item}}
+                                                        </td>
+                                                        <td><a style="cursor:pointer"><span style='color:red;' class='glyphicon glyphicon-remove ' ng-click="removeFutureTask($index)"></span></a></td>
+                                                </tr>
+                                        </tbody>
+                                </table>
+                        </div>
+                </div>
+        </div>
+
+
+</div>

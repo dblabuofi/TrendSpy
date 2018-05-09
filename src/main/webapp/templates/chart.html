@@ -1,0 +1,80 @@
+<label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Select Finished task">Task: </label>
+<select ng-model="selectedTask" 
+        ng-options="item.id as item.text for item in items"
+        ng-change="selctionChanged()" >
+        <option style="display:none" value=""> select a task
+        </option>
+</select>       
+
+<button type="button" class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Optional Field</button>
+<button class="btn btn-info" ng-click="generateGraph()">
+        Generate Graph
+</button>
+<button class="btn btn-info pull-right" ng-click="save()">
+        Save as Image
+</button>
+<button disabled class="btn btn-info pull-right"># of Tweets Returned <span class="badge">{{tweetsReturnCount}}</span></button>
+
+<br>
+<div uib-collapse="isCollapsed">
+        <div class="well">
+                <form name="myForm2" novalidate angular-validator class='form-inline'>
+                          <label style="font-size:1.5em;font-color:#927346;"  data-toggle="tooltip" data-placement="top" title="Example: Dallas cop shooting, Tina">
+                                Key words:
+                        </label>
+                        <input name="keywords" type="text" ng-model="filterKeywords" placeholder="separated by comma">
+                        <label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Example: 07/10/2016">From Date: </label>
+                        <input type="text" 
+                               name="fromDate"
+                               validate-on="dirty"
+                               ng-model="fromDate" 
+                               validator = "myFromDateValidator(fromDate)"
+                               invalid-message="'date like 07-01-2016 08:03:04'"
+                               required-message="'This field is required'"
+                               placeholder="mm-dd-yyyy hh:mm:ss"
+                               required>
+                        <label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Example: 07/30/2016">To Date: </label>
+                        <input type="text" 
+                               name="toDate"
+                               validate-on="dirty"
+                               ng-model="toDate" 
+                               validator = "myFromDateValidator(toDate)"
+                               invalid-message="'date like 07-16-2016 08:03:04'"
+                               required-message="'This field is required'"
+                               placeholder="mm-dd-yyyy hh:mm:ss"
+                               required>
+                        <label style="font-size:1.5em;font-color:#927346;" data-toggle="tooltip" data-placement="top" title="Example: Portland">Location: </label>
+                        <!--<input type="text" ng-model="location" placeholder="" style='width:6%;'>-->
+                        <input autocomplete="off" name="location" type="text" ng-model="location" uib-typeahead="address for address in getLocation($viewValue)" >
+                </form>
+        </div>
+</div>
+
+ <img ng-show="loading" src="image/loading.gif" style="width:150px;height:150px;position:fixed;top:40%;left:35%;"/>
+ <div class="row">
+         <div class="row">
+                 <div style="position:relative;left:2%;">
+                         <div style="" ng-show="showtypeshow">
+                                 Chart type:
+                                 <select ng-model="chartType" ng-change="chartTypeChange()">
+                                         <option value="Line">Line</option>
+                                         <option value="Bar">Bars</option>
+                                 </select>
+                                 Collected by:
+                                 <select ng-model="showtype" ng-change="typeChanged()">
+                                         <option value="hour">Hour</option>
+                                         <option value="day">Day</option>
+                                         <option value="week">Week</option>
+                                         <option value="month">Month</option>
+                                         <option value="year">Year</option>
+                                 </select>
+                         </div>
+                 </div>
+         </div>
+         <div class="row">
+                 <div style="position:relative;left:2%;width: 95%;" >
+                         <canvas id="canvas" class='chart-base' chart-type='chartType' chart-data="data" chart-labels="labels" 
+                                 chart-legend="true" chart-series="series" chart-click="onClick"></canvas> 
+                 </div>
+         </div>
+ </div>

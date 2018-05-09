@@ -1,0 +1,119 @@
+<html ng-app="myApp">
+    <head>
+    <title>Trend Spy</title>
+    <link rel="icon" type="image/x-icon"  href="image/favicon1.ico"/>
+    <link rel="icon" type="image/png" href="image/favicon1-16.png" />
+    
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine">
+    <link rel="stylesheet" href="javascript/angular-chart.css">
+    <link rel="stylesheet" href="css/newcss.css">
+    <link rel="stylesheet" href="css/resize.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+    <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
+
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-route.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js"></script>  
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.1.2.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-smart-table/2.1.6/smart-table.js"></script> 
+
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js" type="text/javascript"></script>-->
+    <script src="directive/Chart.js" type="text/javascript"></script>
+    <!--<script src="https://cdn.jsdelivr.net/angular.chartjs/1.1.1/angular-chart.js" type="text/javascript"></script>-->
+    <script src="directive/angular-chart.js" type="text/javascript"></script>
+
+    <script src="app.js"></script>  
+    
+    <script src="factories/chartFactory.js"></script>  
+    <script src="factories/urlfactory.js"></script>  
+    <script src="factories/locationservice.js"></script>  
+    
+    <script src="javascript/html2canvas.js"></script>  
+    <script src="javascript/jspdf.debug.js"></script>  
+    <script src="javascript/moment.js"></script>  
+    <script src="javascript/moment-timezone.js"></script>  
+    <script src="javascript/angular-validator.js"></script>  
+    <script src="javascript/slider.js"></script>  
+    <script src="directive/resizable.js"></script>  
+    <script src="directive/rangeSlider.js"></script>  
+    
+<!--    <script src="controllers/progressController.js"></script>  
+    <script src="controllers/searchController.js"></script>  
+    <script src="controllers/submitController.js"></script>  
+    <script src="controllers/friendController.js"></script>  
+    <script src="controllers/chartController.js"></script>  
+    <script src="controllers/homeController.js"></script>  
+    <script src="controllers/googleTrendControler.js"></script>
+    <script src="controllers/resultController.js"></script>-->
+    <script src="controllers/queryController.js"></script>
+    <script src="controllers/queryMockController.js"></script>
+    
+    <style>
+        .selected { background-color: CC9933; }
+        .newWidth {width:110%;}
+    </style>
+    </head>
+    <!--<body ng-controller="appController" style="overflow:hidden;font-family: 'Lato'" >-->
+    <body ng-controller="appController" style="font-family: 'Lato', serif;background-color: #EFF0F1;" >
+<!--        <nav class="navbar navbar-default" style="background-color:#010101">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#home" style="font-size:3em;color:#927346;">Twitter Crawler</a>
+                </div>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="#home" style="font-size:2em;color:#FFFFFF;">Home</a></li>
+                        <li><a href="#google" style="font-size:2em;color:#FFFFFF;">Google Trends</a></li>
+                        <li><a href="#submit" style="font-size:2em;color:#FFFFFF;">Submit</a></li>
+                        <li><a href="#progress" style="font-size:2em;color:#FFFFFF;">Progress</a></li>
+                        <li><a href="#search" style="font-size:2em;color:#FFFFFF;">Search</a></li>
+                        <li><a href="#chart" style="font-size:2em;color:#FFFFFF;">Chart</a></li>
+                        <li><a href="#result" style="font-size:2em;color:#FFFFFF;">Result</a></li>
+                        <li><a href="#query" style="font-size:2em;color:#FFFFFF;">Query</a></li>
+                        <li><a href="#friend" style="font-size:2em;color:#FFFFFF;">Friend</a></li>
+                    </ul>
+                </div>
+                <div class="navbar-brand pull-right">
+                    <a ng-click="Readme()" style="cursor: pointer; font-size:2em;color:#927346;" >Instructions</a>
+                    <a href="manual/Twitter Manual.pdf" target="_blank" style="cursor: pointer; font-size:2em;color:#927346;" >Manual</a>
+                    &nbsp;
+                    <a ng-click="modalOpen()" style="cursor: pointer; font-size:2em;color:#927346;" >About</a>
+                </div>
+            </div>
+        </nav>-->
+        
+        <div ng-view></div>
+        
+<!--        <script type="text/ng-template" id="myModalContentReadme.html">
+            read me
+        </script>-->
+
+        
+        <script type="text/ng-template" id="myModalContentAbout.html">
+            <div class="modal-header">
+            <h3 class="modal-title">About <img src="image/uofidaho.png" alt="University of Idaho" style="width:300px;height:40px;" class="pull-right"></h3>
+            </div>
+            <div class="modal-body">
+            <p>This is the first working version of Twitter Crawler Project.</p> 
+            </div>
+            <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok(this)">OK</button>
+            </div>
+        </script>
+
+    </body>
+    
+</html>

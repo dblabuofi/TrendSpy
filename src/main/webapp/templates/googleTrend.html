@@ -1,0 +1,155 @@
+<div class="container">
+    <form name="googleTrendForm" angular-validator angular-validator-submit=""  class="form-horizontal" role="form"  id='googleTrendForm' novalidate>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Key words:</label>
+            <div class="col-sm-10">
+                <input class="form-control" autocomplete="off" name="keywords" ng-model="keywords" placeholder="separated by comma, only support Logical OR"
+                       validate-on="dirty"
+                        required-message="'This field is required'"
+                        required
+                       >
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Position:</label>
+            <div class="col-sm-10">
+                <input class="form-control" autocomplete="off" ng-model="position"
+                       uib-typeahead="location.name for location in locations | filter:$viewValue"
+                       typeahead-editable ="false"
+                       typeahead-wait-ms="600"
+                       >
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >From Date:</label>
+            <div class="col-sm-10">
+                               <!--validator = "myFDateValidator(fromDate) === true"-->
+                <input  class="form-control" autocomplete="off" ng-model="fromDate" name="fromDate" 
+                               validate-on="dirty"
+                               validator = "myFromDateValidator(fromDate)"
+                               invalid-message="'dates like: 07-31-2016'"
+                               required-message="'This field is required'"
+                               placeholder="mm-dd-yyyy"
+                               required
+                       >
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >To Date:</label>
+            <div class="col-sm-10">
+                               <!--validator = "myTDateValidator(fromDate, toDate) === true"-->
+                <input class="form-control" autocomplete="off" name="toDate" ng-model="toDate"
+                        validate-on="dirty"
+                               validator = "myToDateValidator(fromDate, toDate) === true"
+                               invalid-message="myToDateValidator(fromDate, toDate)"
+                               required-message="'This field is required'"
+                               placeholder="mm-dd-yyyy" 
+                               required
+                       >
+            </div>
+        </div>
+<!--        <div class="form-group">
+            <label class="control-label col-sm-2" >Categories:</label>
+            <div class="col-sm-10">
+                <input class="form-control" autocomplete="off" ng-model="category"
+                       uib-typeahead="category.name for category in categories | filter:$viewValue"
+                       typeahead-editable ="false"
+                       typeahead-wait-ms="400"
+                       >
+            </div>
+        </div>-->
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Search resources:</label>
+            <div  class="col-sm-10">
+                <select class="form-control" ng-model="trendResources">
+                    <option value="" ng-selected="true">Web Search</option>
+                    <option value="images">Image Search</option>
+                    <option value="news">News Search</option>
+                    <option value="froogle" >Google Shopping</option>
+                    <option value="youtube">YouTube Search</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="pull-right col-sm-10">
+                <button type="submit" class="btn btn-primary" ng-disabled="googleTrendForm.$invalid === true" ng-click="submitGoogleTrend()">Submit</button>
+            </div>
+        </div>
+    </form>
+    <div uib-alert class="alert-warning" close="closeAlert()" ng-show="infoShow">No result returned</div>    
+        
+     <img ng-show="loading === 1" src="image/loading.gif" style="width:150px;height:150px;position:fixed;top:40%;left:35%;"/>
+    <div ng-show="loading === 2">
+    <!--<div >-->
+            <div class="row">
+                    <div class="col-md-4">
+                            <!--<div class="row">-->
+                            <div class="form-group">
+                                    <!--<div class="col-md-4">-->
+                                            <label class="col-sm-4">Chart type:</label>
+                                    <!--</div>-->
+                                    <div class="col-md-8">
+                                            <select ng-model="chartType" ng-change="googleTrendChanged()" class="form-control">
+                                                    <option value="line">Line</option>
+                                                    <option value="bar">Bars</option>
+                                            </select>
+                                    </div>
+                            </div>
+                    </div>
+                    <div class="col-md-8">
+                            <div class="form-group">
+<!--                                    <div class="col-md-1">
+                                            <label>Scale:</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                            <div id="blue" 
+                                            ui-slider="slider.options" 
+                                        min="0" 
+                                        max="50" 
+                                                 ng-model="scaleValue" 
+                                                 class="
+                                                 ng-untouched 
+                                                 ng-valid 
+                                                 ui-slider 
+                                                 ui-slider-horizontal 
+                                                 ui-widget 
+                                                 ui-widget-content 
+                                                 ui-corner-all 
+                                                 ng-dirty 
+                                                 ng-valid-parse">
+                                                 <span class="
+                                                       ui-slider-handle 
+                                                       ui-state-default 
+                                                       ui-corner-all" 
+                                                       tabindex="0" 
+                                                       style="left: 59%;"></span></div>
+
+                                    </div>-->
+                            </div>
+                    </div>
+            </div>
+            <div class="row">
+                    <canvas class='chart-base' 
+                            chart-type="chartType" 
+                            chart-labels="labels"
+                            chart-options="options" 
+                            chart-data="data" 
+                            chart-series="series"
+                            chart-legend="true"
+                            ></canvas> 
+            </div>
+            
+    </div>
+            
+<!--    
+    <canvas id="bar" 
+            class="chart chart-line"
+            chart-data="data" 
+            chart-labels="labels" 
+            chart-options="options" 
+            chart-series="series"
+            chart-colors ="colours"
+            chart-legend="true">
+    </canvas>-->
+    
+</div>

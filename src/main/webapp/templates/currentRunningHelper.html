@@ -1,0 +1,59 @@
+<div layout="column" layout-align="end end" >
+<md-tabs md-dynamic-height="" md-border-bottom="">
+    <md-tab label="Current Running">
+        <md-content class="md-padding">
+            <table class="table font-test">
+                <thead>
+                    <tr>
+                        <th ng-repeat="title in curcontent.titles">
+                            {{title}}
+                        </th>
+                        <th>delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="content in curcontent.data" ng-click="curtableclick(content)" ng-class = "{selected:content.toString().split(',')[0] == selectedID}">
+                        <td ng-repeat="item in content track by $index" >
+                            {{item}}
+                        </td>
+                        <td><a style="cursor:pointer"><span style='color:red;' class='glyphicon glyphicon-remove pointer' ng-click="removeCurTask($index)"></span></a></td>
+                    </tr>
+                </tbody> 
+            </table>
+
+        </md-content>
+    </md-tab>
+    <md-tab label="Future Task">
+        <md-content class="md-padding">
+            <table class="table font-test">
+                <thead>
+                    <tr>
+                        <th ng-repeat="title in fucontent.titles">
+                            {{title}}
+                        </th>
+                        <th>
+                            delete
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="content in fucontent.data" ng-click="futableclick(content)" ng-class = "{selected:content.toString().split(',')[0] == selectedID}">
+                        <td ng-repeat="item in content track by $index" >
+                            {{item}}
+                        </td>
+                        <td><a style="cursor:pointer"><span style='color:red;' class='glyphicon glyphicon-remove ' ng-click="removeFutureTask($index)"></span></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-content>
+    </md-tab>
+</md-tabs> 
+<div>
+    <md-button md-autofocus class="md-raised font-test" md-colors="{background:'light-green'}" ng-click="cancel()">
+        Close
+    </md-button>
+</div>
+</div>
+
+
+        
